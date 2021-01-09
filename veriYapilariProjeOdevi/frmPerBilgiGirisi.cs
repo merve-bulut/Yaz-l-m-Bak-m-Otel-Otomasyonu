@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Data.SQLite;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -14,8 +14,8 @@ namespace veriYapilariProjeOdevi
     public partial class frmPerBilgiGirisi : Form
     {
         string connection;
-        SQLiteCommand cmd;
-        SQLiteDataReader dr;
+        SqlCommand cmd;
+        SqlDataReader dr;
         public frmPerBilgiGirisi()
         {
             InitializeComponent();
@@ -30,7 +30,7 @@ namespace veriYapilariProjeOdevi
             }
             else
             {
-                SQLiteConnection bag = new SQLiteConnection(connection);
+                SqlConnection bag = new SqlConnection(connection);
                 try
                 {
                     bag.Open();
@@ -39,7 +39,7 @@ namespace veriYapilariProjeOdevi
                     departmanid = cmbDepartman.SelectedIndex + 1;
                     pozisyonid = cmbPozisyon.SelectedIndex + 1;
                     string komut = @"INSERT INTO Personel (otelid,tc,ad,soyad,telefon,adres,eposta,departmanid,pozisyonid,puan) VALUES('" + otelid.ToString() + "','" + txtTC.Text + "','" + TxtAd.Text + "','" + TxtSoyad.Text + "','" + txtTel.Text + "','" + txtAdres.Text + "','" + txtEPosta.Text + "','" + departmanid.ToString() + "','" + pozisyonid.ToString() + "','" + puan.ToString() + "')";
-                    cmd = new SQLiteCommand(komut, bag);
+                    cmd = new SqlCommand(komut, bag);
                     int sonuc = cmd.ExecuteNonQuery();
                     bag.Close();
                     if (sonuc != 0)
@@ -61,13 +61,13 @@ namespace veriYapilariProjeOdevi
 
         private void frmPerBilgiGirisi_Load(object sender, EventArgs e)
         {
-            connection = @"Data Source =C:\Users\merve_l7t2av4\Desktop\veriYapilari\Yeni klasör\otel.db;version=3";
-            SQLiteConnection bag = new SQLiteConnection(connection);
+            connection = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Program Files\Microsoft SQL Server\MSSQL12.SQLEXPRESS\MSSQL\DATA\OtelDB.mdf;Integrated Security=True;Connect Timeout=30";
+            SqlConnection bag = new SqlConnection(connection);
             try
             {
                 bag.Open();
                 string komut = @"SELECT otelismi FROM otelbilgi ORDER BY otelismi";
-                cmd = new SQLiteCommand(komut, bag);
+                cmd = new SqlCommand(komut, bag);
                 dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
@@ -86,12 +86,12 @@ namespace veriYapilariProjeOdevi
         {
             cmbDepartman.Items.Clear();
             cmbPozisyon.Items.Clear();
-            SQLiteConnection bag = new SQLiteConnection(connection);
+            SqlConnection bag = new SqlConnection(connection);
             try
             {
                 bag.Open();
                 string komut = @"SELECT * FROM departman";
-                cmd = new SQLiteCommand(komut, bag);
+                cmd = new SqlCommand(komut, bag);
                 dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
@@ -99,7 +99,7 @@ namespace veriYapilariProjeOdevi
                 }
                 dr.Close();
                 komut = @"SELECT * FROM pozisyon";
-                cmd = new SQLiteCommand(komut, bag);
+                cmd = new SqlCommand(komut, bag);
                 dr = cmd.ExecuteReader();
                 while(dr.Read())
                 {

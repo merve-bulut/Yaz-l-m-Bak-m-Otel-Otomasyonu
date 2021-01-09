@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Data.SQLite;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -14,8 +14,8 @@ namespace veriYapilariProjeOdevi
     public partial class frmOtelGoruntule : Form
     {
         string connection;
-        SQLiteCommand cmd;
-        SQLiteDataReader dr;
+        SqlCommand cmd;
+        SqlDataReader dr;
         public frmOtelGoruntule()
         {
             InitializeComponent();
@@ -24,13 +24,13 @@ namespace veriYapilariProjeOdevi
         public int sehirid = 0, ilceid = 0;
         private void btnOtelGoruntule_Click(object sender, EventArgs e)
         {
-            SQLiteConnection bag = new SQLiteConnection(connection);
+            SqlConnection bag = new SqlConnection(connection);
             try
             { 
                 bag.Open();
                 
                 string komut = @"SELECT * FROM otelbilgi";
-                cmd = new SQLiteCommand(komut, bag);
+                cmd = new SqlCommand(komut, bag);
                 dr = cmd.ExecuteReader();
 
                 while (dr.Read())
@@ -51,12 +51,12 @@ namespace veriYapilariProjeOdevi
         private void btnGoster_Click(object sender, EventArgs e)
         {
             connection = @"Data Source =C:\Users\merve_l7t2av4\Desktop\Yeni klasör\otel.db;version=3";
-            SQLiteConnection bag = new SQLiteConnection(connection);
+            SqlConnection bag = new SqlConnection(connection);
             try
             {
                 bag.Open();
                 string komut = @"SELECT * FROM otelbilgi";
-                cmd = new SQLiteCommand(komut, bag);
+                cmd = new SqlCommand(komut, bag);
                 dr = cmd.ExecuteReader();
                 aramaAgaci = new IkiliAramaAgaci();
                 while (dr.Read())
@@ -108,13 +108,13 @@ namespace veriYapilariProjeOdevi
 
         private void frmOtelGoruntule_Load(object sender, EventArgs e)
         {
-            connection = @"Data Source =C:\Users\merve_l7t2av4\Desktop\veriYapilari\Yeni klasör\otel.db;version=3";
-            SQLiteConnection bag = new SQLiteConnection(connection);
+            connection = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Program Files\Microsoft SQL Server\MSSQL12.SQLEXPRESS\MSSQL\DATA\OtelDB.mdf;Integrated Security=True;Connect Timeout=30";
+            SqlConnection bag = new SqlConnection(connection);
             try
             {
                 bag.Open();
                 string komut = @"SELECT * FROM otelbilgi";
-                cmd = new SQLiteCommand(komut, bag);
+                cmd = new SqlCommand(komut, bag);
                 dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {

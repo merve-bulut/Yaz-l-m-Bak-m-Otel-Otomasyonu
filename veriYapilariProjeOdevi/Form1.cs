@@ -7,15 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Data.SQLite;
+using System.Data.SqlClient;
+
 
 namespace veriYapilariProjeOdevi
 {
     public partial class frmIndex : Form
     {
         string connection;
-        SQLiteCommand cmd;
-        SQLiteDataReader dr;
+        SqlCommand cmd;
+        SqlDataReader dr;
         
         public frmIndex()
         {
@@ -33,13 +34,13 @@ namespace veriYapilariProjeOdevi
 
         private void frmIndex_Load(object sender, EventArgs e)
         {
-            connection = @"Data Source =C:\Users\merve_l7t2av4\Desktop\veriYapilari\Yeni klasör\otel.db;version=3";
-            SQLiteConnection bag = new SQLiteConnection(connection);
+            connection = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Program Files\Microsoft SQL Server\MSSQL12.SQLEXPRESS\MSSQL\DATA\OtelDB.mdf;Integrated Security=True;Connect Timeout=30";
+            SqlConnection bag = new SqlConnection(connection);
             try
             {
                 bag.Open();
                 string komut = @"SELECT * FROM otelbilgi";
-                cmd = new SQLiteCommand(komut, bag);
+                cmd = new SqlCommand(komut, bag);
                 dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
@@ -63,7 +64,7 @@ namespace veriYapilariProjeOdevi
             try
             {
                 string komut = @"SELECT * FROM personel";
-                cmd = new SQLiteCommand(komut, bag);
+                cmd = new SqlCommand(komut, bag);
                 dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {

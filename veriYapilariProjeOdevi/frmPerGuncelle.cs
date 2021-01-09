@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Data.SQLite;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -14,8 +14,8 @@ namespace veriYapilariProjeOdevi
     public partial class frmPerGuncelle : Form
     {
         string connection;
-        SQLiteCommand cmd;
-        SQLiteDataReader dr;
+        SqlCommand cmd;
+        SqlDataReader dr;
         public frmPerGuncelle()
         {
             InitializeComponent();
@@ -23,20 +23,20 @@ namespace veriYapilariProjeOdevi
 
         private void btnPersonelGunc_Click(object sender, EventArgs e)
         {
-            SQLiteConnection bag = new SQLiteConnection(connection);
+            SqlConnection bag = new SqlConnection(connection);
             try
             {
                 bag.Open();
                 string komut = @"UPDATE Personel SET tc=@p1,ad=@p2,soyad=@p3,telefon=@p4,adres=@p5,eposta=@p6,departmanid=@p7,pozisyonid=@p8";
-                cmd = new SQLiteCommand(komut, bag);
-                SQLiteParameter prm1 = new SQLiteParameter("p1", txtGuncTC.Text);
-                SQLiteParameter prm2 = new SQLiteParameter("p2", TxtGuncAd.Text);
-                SQLiteParameter prm3 = new SQLiteParameter("p3", TxtGuncSoyad.Text);
-                SQLiteParameter prm4 = new SQLiteParameter("p4", txtGuncTel.Text);
-                SQLiteParameter prm5 = new SQLiteParameter("p5", txtGuncAdres.Text);
-                SQLiteParameter prm6 = new SQLiteParameter("p6", txtGuncEPosta.Text);
-                SQLiteParameter prm7 = new SQLiteParameter("p7", (cmbGuncDepartman.SelectedIndex+1).ToString());
-                SQLiteParameter prm8 = new SQLiteParameter("p8", (cmbGuncPoz.SelectedIndex+1).ToString());
+                cmd = new SqlCommand(komut, bag);
+                SqlParameter prm1 = new SqlParameter("p1", txtGuncTC.Text);
+                SqlParameter prm2 = new SqlParameter("p2", TxtGuncAd.Text);
+                SqlParameter prm3 = new SqlParameter("p3", TxtGuncSoyad.Text);
+                SqlParameter prm4 = new SqlParameter("p4", txtGuncTel.Text);
+                SqlParameter prm5 = new SqlParameter("p5", txtGuncAdres.Text);
+                SqlParameter prm6 = new SqlParameter("p6", txtGuncEPosta.Text);
+                SqlParameter prm7 = new SqlParameter("p7", (cmbGuncDepartman.SelectedIndex+1).ToString());
+                SqlParameter prm8 = new SqlParameter("p8", (cmbGuncPoz.SelectedIndex+1).ToString());
                 cmd.Parameters.Add(prm1);
                 cmd.Parameters.Add(prm2);
                 cmd.Parameters.Add(prm3);
@@ -58,13 +58,13 @@ namespace veriYapilariProjeOdevi
 
         private void frmPerGuncelle_Load(object sender, EventArgs e)
         {
-            connection = @"Data Source =C:\Users\merve_l7t2av4\Desktop\veriYapilari\Yeni klasör\otel.db;version=3";
-            SQLiteConnection bag = new SQLiteConnection(connection);
+            connection = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Program Files\Microsoft SQL Server\MSSQL12.SQLEXPRESS\MSSQL\DATA\OtelDB.mdf;Integrated Security=True;Connect Timeout=30";
+            SqlConnection bag = new SqlConnection(connection);
             try
             {
                 bag.Open();
                 string komut = @"SELECT otelismi FROM otelbilgi ORDER BY otelismi";
-                cmd = new SQLiteCommand(komut, bag);
+                cmd = new SqlCommand(komut, bag);
                 dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
@@ -72,7 +72,7 @@ namespace veriYapilariProjeOdevi
                 }
                 dr.Close();
                 komut = @"SELECT isim FROM departman";
-                cmd = new SQLiteCommand(komut, bag);
+                cmd = new SqlCommand(komut, bag);
                 dr = cmd.ExecuteReader();
                 while(dr.Read())
                 {
@@ -80,7 +80,7 @@ namespace veriYapilariProjeOdevi
                 }
                 dr.Close();
                 komut = @"SELECT psnisim FROM pozisyon";
-                cmd = new SQLiteCommand(komut, bag);
+                cmd = new SqlCommand(komut, bag);
                 dr = cmd.ExecuteReader();
                 while(dr.Read())
                 {
@@ -106,15 +106,15 @@ namespace veriYapilariProjeOdevi
             cmbGuncPer.Text = null;
             cmbGuncPer.Items.Clear();
             cmbGuncPer.SelectedIndex = -1;
-            SQLiteConnection bag = new SQLiteConnection(connection);
+            SqlConnection bag = new SqlConnection(connection);
             try
             {
                 bag.Open();
                 int otelid = 0;
                 otelid = cmbPerGuncOtel.SelectedIndex + 1;
                 string komut = @"SELECT ad FROM personel WHERE otelid =@p";
-                cmd = new SQLiteCommand(komut, bag);
-                SQLiteParameter prm = new SQLiteParameter("p", otelid.ToString());
+                cmd = new SqlCommand(komut, bag);
+                SqlParameter prm = new SqlParameter("p", otelid.ToString());
                 cmd.Parameters.Add(prm);
                 dr = cmd.ExecuteReader();
                 while (dr.Read())
@@ -138,16 +138,16 @@ namespace veriYapilariProjeOdevi
             TxtGuncSoyad.Text = null;
             txtGuncTC.Text = null;
             txtGuncTel.Text = null;
-            SQLiteConnection bag = new SQLiteConnection(connection);
+            SqlConnection bag = new SqlConnection(connection);
             try
             {
                 bag.Open();
                 int perid = 0;
                 perid = cmbPerGuncOtel.SelectedIndex + 1;
                 string komut = @"SELECT * FROM Personel WHERE otelid=@p1 AND ad=@p2";
-                cmd = new SQLiteCommand(komut, bag);
-                SQLiteParameter prm1 = new SQLiteParameter("p1", (cmbPerGuncOtel.SelectedIndex + 1).ToString());
-                SQLiteParameter prm2 = new SQLiteParameter("p2", cmbGuncPer.Text);
+                cmd = new SqlCommand(komut, bag);
+                SqlParameter prm1 = new SqlParameter("p1", (cmbPerGuncOtel.SelectedIndex + 1).ToString());
+                SqlParameter prm2 = new SqlParameter("p2", cmbGuncPer.Text);
                 cmd.Parameters.Add(prm1);
                 cmd.Parameters.Add(prm2);
                 dr = cmd.ExecuteReader();
@@ -176,13 +176,13 @@ namespace veriYapilariProjeOdevi
 
         private void button1_Click(object sender, EventArgs e)
         {
-            SQLiteConnection bag = new SQLiteConnection(connection);
+            SqlConnection bag = new SqlConnection(connection);
             try
             {
                 int sonuc = 0;
                 bag.Open();
                 string komut = @"DELETE FROM Personel WHERE tc=" + txtGuncTC.Text;
-                cmd = new SQLiteCommand(komut, bag);
+                cmd = new SqlCommand(komut, bag);
                 sonuc = cmd.ExecuteNonQuery();
                 if(sonuc == 1)
                 {
@@ -219,12 +219,12 @@ namespace veriYapilariProjeOdevi
             } else
             {
                 int puan = 0;
-                SQLiteConnection bag = new SQLiteConnection(connection);
+                SqlConnection bag = new SqlConnection(connection);
                 try
                 {
                     bag.Open();
                     string komut = @"SELECT puan FROM personel WHERE tc=" + txtGuncTC.Text;
-                    cmd = new SQLiteCommand(komut, bag);
+                    cmd = new SqlCommand(komut, bag);
                     dr = cmd.ExecuteReader();
                     while(dr.Read())
                     {
@@ -263,7 +263,7 @@ namespace veriYapilariProjeOdevi
                     int sonuc = 0;
                     bag.Open();
                     string komut = @"UPDATE Personel SET puan=" + puan.ToString() + " WHERE tc=" + txtGuncTC.Text;
-                    cmd = new SQLiteCommand(komut, bag);
+                    cmd = new SqlCommand(komut, bag);
                     sonuc = cmd.ExecuteNonQuery();
                     if (sonuc == 1)
                         MessageBox.Show(TxtGuncAd.Text + " Adli Personelin Toplam Puanı : " + puan.ToString());

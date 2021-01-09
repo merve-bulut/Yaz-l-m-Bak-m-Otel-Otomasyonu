@@ -7,15 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Data.SQLite;
+using System.Data.SqlClient;
 
 namespace veriYapilariProjeOdevi
 {
     public partial class frmPerListele : Form
     {
         string connection;
-        SQLiteCommand cmd;
-        SQLiteDataReader dr;
+        SqlCommand cmd;
+        SqlDataReader dr;
 
         public frmPerListele()
         {
@@ -26,13 +26,13 @@ namespace veriYapilariProjeOdevi
         {
             dataGridView1.AllowUserToAddRows = false;
             dataGridView1.AllowUserToDeleteRows = false;
-            connection = @"Data Source =C:\Users\merve_l7t2av4\Desktop\veriYapilari\Yeni klasör\otel.db;version=3";
-            SQLiteConnection bag = new SQLiteConnection(connection);
+            connection = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Program Files\Microsoft SQL Server\MSSQL12.SQLEXPRESS\MSSQL\DATA\OtelDB.mdf;Integrated Security=True;Connect Timeout=30";
+            SqlConnection bag = new SqlConnection(connection);
             try
             {
                 bag.Open();
                 string komut = @"SELECT otelismi FROM otelbilgi ORDER BY otelismi";
-                cmd = new SQLiteCommand(komut, bag);
+                cmd = new SqlCommand(komut, bag);
                 dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
@@ -40,7 +40,7 @@ namespace veriYapilariProjeOdevi
                 }
                 dr.Close();
                 komut = @"SELECT isim FROM departman";
-                cmd = new SQLiteCommand(komut, bag);
+                cmd = new SqlCommand(komut, bag);
                 dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
@@ -69,14 +69,14 @@ namespace veriYapilariProjeOdevi
             } else
             {
                 dataGridView1.Rows.Clear();
-                SQLiteConnection bag = new SQLiteConnection(connection);
+                SqlConnection bag = new SqlConnection(connection);
                 try
                 {
                     bag.Open();
                     string komut = @"SELECT ad,soyad,puan FROM Personel WHERE otelid=@p1 AND departmanid=@p2 ORDER BY puan DESC";
-                    cmd = new SQLiteCommand(komut, bag);
-                    SQLiteParameter prm1 = new SQLiteParameter("p1", (comboBox1.SelectedIndex + 1).ToString());
-                    SQLiteParameter prm2 = new SQLiteParameter("p2", (comboBox2.SelectedIndex + 1).ToString());
+                    cmd = new SqlCommand(komut, bag);
+                    SqlParameter prm1 = new SqlParameter("p1", (comboBox1.SelectedIndex + 1).ToString());
+                    SqlParameter prm2 = new SqlParameter("p2", (comboBox2.SelectedIndex + 1).ToString());
                     cmd.Parameters.Add(prm1);
                     cmd.Parameters.Add(prm2);
                     dr = cmd.ExecuteReader();
@@ -102,14 +102,14 @@ namespace veriYapilariProjeOdevi
             for (int i=0;i<count;i++)
             {
                 dizi[i, 0] = i;
-                SQLiteConnection bag = new SQLiteConnection(connection);
+                SqlConnection bag = new SqlConnection(connection);
                 try
                 {
                     bag.Open();
                     string komut = @"SELECT puan FROM Personel WHERE otelid=@p1 AND departmanid=@p2";
-                    cmd = new SQLiteCommand(komut, bag);
-                    SQLiteParameter prm1 = new SQLiteParameter("p1", (comboBox1.SelectedIndex + 1).ToString());
-                    SQLiteParameter prm2 = new SQLiteParameter("p2", (comboBox2.SelectedIndex + 1).ToString());
+                    cmd = new SqlCommand(komut, bag);
+                    SqlParameter prm1 = new SqlParameter("p1", (comboBox1.SelectedIndex + 1).ToString());
+                    SqlParameter prm2 = new SqlParameter("p2", (comboBox2.SelectedIndex + 1).ToString());
                     cmd.Parameters.Add(prm1);
                     cmd.Parameters.Add(prm2);
                     dr = cmd.ExecuteReader();

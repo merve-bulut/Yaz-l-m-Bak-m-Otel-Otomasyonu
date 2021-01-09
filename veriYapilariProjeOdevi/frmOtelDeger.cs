@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Data.SQLite;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -14,8 +14,8 @@ namespace veriYapilariProjeOdevi
     public partial class frmOtelDeger : Form
     {
         string connection;
-        SQLiteCommand cmd;
-        SQLiteDataReader dr;
+        SqlCommand cmd;
+        SqlDataReader dr;
         public frmOtelDeger()
         {
             InitializeComponent();
@@ -24,13 +24,13 @@ namespace veriYapilariProjeOdevi
 
         private void frmOtelDeger_Load(object sender, EventArgs e)
         {
-            connection = @"Data Source =C:\Users\merve_l7t2av4\Desktop\veriYapilari\Yeni klasör\otel.db;version=3";
-            SQLiteConnection bag = new SQLiteConnection(connection);
+            connection = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Program Files\Microsoft SQL Server\MSSQL12.SQLEXPRESS\MSSQL\DATA\OtelDB.mdf;Integrated Security=True;Connect Timeout=30";
+            SqlConnection bag = new SqlConnection(connection);
             try
             {
                 bag.Open();
                 string komut = @"SELECT otelismi FROM otelbilgi ORDER BY otelismi";
-                cmd = new SQLiteCommand(komut, bag);
+                cmd = new SqlCommand(komut, bag);
                 dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
@@ -53,21 +53,21 @@ namespace veriYapilariProjeOdevi
             }
             else
             {
-                SQLiteConnection bag = new SQLiteConnection(connection);
+                SqlConnection bag = new SqlConnection(connection);
                 int puan = 0,id=0;
                 try
                 {
                     bag.Open();
                     string komut = @"SELECT id FROM otelbilgi WHERE otelismi=@p";
-                    cmd = new SQLiteCommand(komut, bag);
-                    SQLiteParameter prm = new SQLiteParameter("p", cmbOtelDeger.Text);
+                    cmd = new SqlCommand(komut, bag);
+                    SqlParameter prm = new SqlParameter("p", cmbOtelDeger.Text);
                     cmd.Parameters.Add(prm);
                     dr = cmd.ExecuteReader();
                     while (dr.Read())
                         id = Int32.Parse(dr["id"].ToString());
                     komut = @"SELECT puan FROM degerlendirme WHERE otelid=@p";
-                    cmd = new SQLiteCommand(komut, bag);
-                    SQLiteParameter prm1 = new SQLiteParameter("p", id.ToString());
+                    cmd = new SqlCommand(komut, bag);
+                    SqlParameter prm1 = new SqlParameter("p", id.ToString());
                     cmd.Parameters.Add(prm1);
                     dr = cmd.ExecuteReader();
                     while (dr.Read())
@@ -98,7 +98,7 @@ namespace veriYapilariProjeOdevi
                 {
                     bag.Open();
                     string komut = @"UPDATE degerlendirme SET puan = '" + puan.ToString() + "' WHERE otelid="+id.ToString() ;
-                    cmd = new SQLiteCommand(komut, bag);
+                    cmd = new SqlCommand(komut, bag);
                     cmd.ExecuteNonQuery();
                     bag.Close();
                 }

@@ -7,15 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Data.SQLite;
+using System.Data.SqlClient;
 
 namespace veriYapilariProjeOdevi
 {
     public partial class frmGuncelle : Form
     {
         string connection;
-        SQLiteCommand cmd;
-        SQLiteDataReader dr;
+        SqlCommand cmd;
+        SqlDataReader dr;
         public frmGuncelle()
         {
             InitializeComponent();
@@ -23,13 +23,13 @@ namespace veriYapilariProjeOdevi
 
         private void frmGuncelle_Load(object sender, EventArgs e)
         {
-            connection = @"Data Source =C:\Users\merve_l7t2av4\Desktop\veriYapilari\Yeni klasör\otel.db;version=3";
-            SQLiteConnection bag = new SQLiteConnection(connection);
+            connection = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Program Files\Microsoft SQL Server\MSSQL12.SQLEXPRESS\MSSQL\DATA\OtelDB.mdf;Integrated Security=True;Connect Timeout=30";
+            SqlConnection bag = new SqlConnection(connection);
             try
             {
                 bag.Open();
                 string komut = @"SELECT otelismi FROM otelbilgi ORDER BY otelismi";
-                cmd = new SQLiteCommand(komut, bag);
+                cmd = new SqlCommand(komut, bag);
                 dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
@@ -37,7 +37,7 @@ namespace veriYapilariProjeOdevi
                 }
                 dr.Close();
                 komut = @"SELECT isim FROM sehirler";
-                cmd = new SQLiteCommand(komut, bag);
+                cmd = new SqlCommand(komut, bag);
                 dr = cmd.ExecuteReader();
                 while(dr.Read())
                 {
@@ -61,14 +61,14 @@ namespace veriYapilariProjeOdevi
             else
             {
                 comboGuncIlce.Items.Clear();
-                SQLiteConnection bag = new SQLiteConnection(connection);
+                SqlConnection bag = new SqlConnection(connection);
                 try
                 {
                     bag.Open();
                     int ilceid = 0,sehirid = 0;
                     string komut = @"SELECT * FROM otelbilgi WHERE otelismi =@p";
-                    cmd = new SQLiteCommand(komut, bag);
-                    SQLiteParameter prm = new SQLiteParameter("p", comboOtelGuncel.Text);
+                    cmd = new SqlCommand(komut, bag);
+                    SqlParameter prm = new SqlParameter("p", comboOtelGuncel.Text);
                     cmd.Parameters.Add(prm);
                     dr = cmd.ExecuteReader();
                     while (dr.Read())
@@ -83,7 +83,7 @@ namespace veriYapilariProjeOdevi
                     }
                     dr.Close();
                     komut = @"SELECT isim FROM ilceler WHERE id="+sehirid;
-                    cmd = new SQLiteCommand(komut, bag);
+                    cmd = new SqlCommand(komut, bag);
                     dr = cmd.ExecuteReader();
                     while(dr.Read())
                     {
@@ -112,7 +112,7 @@ namespace veriYapilariProjeOdevi
                 MessageBox.Show("Lütfen Boş Alanları Doldurunuz.");
             } else
             {
-                SQLiteConnection bag = new SQLiteConnection(connection);
+                SqlConnection bag = new SqlConnection(connection);
                 try
                 {
                     int sehirid = 0, ilceid = 0;
@@ -120,8 +120,8 @@ namespace veriYapilariProjeOdevi
                     ilceid = comboGuncIlce.SelectedIndex + 1;
                     bag.Open();
                     string komut = @"UPDATE otelbilgi SET otelismi='" + txtGuncAd.Text + "',sehir='" + sehirid.ToString() + "',ilce='" + ilceid.ToString() + "',adres='" + txtGuncAdres.Text + "',telefon='" + txtGuncTelefon.Text + "',eposta='" + txtGuncEPosta.Text + "',odasayisi='" + txtGuncOdaSayisi.Text +  "' WHERE otelismi=@p";
-                    cmd = new SQLiteCommand(komut, bag);
-                    SQLiteParameter prm = new SQLiteParameter("p", comboOtelGuncel.Text);
+                    cmd = new SqlCommand(komut, bag);
+                    SqlParameter prm = new SqlParameter("p", comboOtelGuncel.Text);
                     cmd.Parameters.Add(prm);
                     sonuc = cmd.ExecuteNonQuery();
                     if(sonuc==1)
@@ -145,7 +145,7 @@ namespace veriYapilariProjeOdevi
                     }
                     else
                     {
-                        MessageBox.Show("Güncellemede Beklenmeyen Bir Hata!!!");
+                        MessageBox.Show("Güncellemede Beklenmeyen Bir Hata!");
                     }
                     bag.Close();
                 }
@@ -158,7 +158,7 @@ namespace veriYapilariProjeOdevi
 
         private void comboGuncSehir_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SQLiteConnection bag = new SQLiteConnection(connection);
+            SqlConnection bag = new SqlConnection(connection);
             try
             {
                 comboGuncIlce.Items.Clear();
@@ -167,8 +167,8 @@ namespace veriYapilariProjeOdevi
                 sehirid = comboGuncSehir.SelectedIndex + 1;
                 bag.Open();
                 string komut = @"SELECT isim FROM ilceler WHERE id=@p";
-                cmd = new SQLiteCommand(komut, bag);
-                SQLiteParameter prm = new SQLiteParameter("p", sehirid.ToString());
+                cmd = new SqlCommand(komut, bag);
+                SqlParameter prm = new SqlParameter("p", sehirid.ToString());
                 cmd.Parameters.Add(prm);
                 dr = cmd.ExecuteReader();
                 while (dr.Read())
@@ -191,14 +191,14 @@ namespace veriYapilariProjeOdevi
                 MessageBox.Show("Silmek istediğiniz oteli seçiniz.");
             } else
             {
-                SQLiteConnection bag = new SQLiteConnection(connection);
+                SqlConnection bag = new SqlConnection(connection);
                 int sonuc = 0;
                 try
                 {
                     bag.Open();
                     string komut = @"DELETE FROM otelbilgi WHERE otelismi=@p";
-                    cmd = new SQLiteCommand(komut, bag);
-                    SQLiteParameter prm = new SQLiteParameter("p", comboOtelGuncel.Text);
+                    cmd = new SqlCommand(komut, bag);
+                    SqlParameter prm = new SqlParameter("p", comboOtelGuncel.Text);
                     cmd.Parameters.Add(prm);
                     sonuc = cmd.ExecuteNonQuery();
                     if (sonuc == 1)

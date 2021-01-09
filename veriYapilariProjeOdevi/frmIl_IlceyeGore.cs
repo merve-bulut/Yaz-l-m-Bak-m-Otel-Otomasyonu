@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Data.SQLite;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -14,8 +14,8 @@ namespace veriYapilariProjeOdevi
     public partial class frmIl_IlceyeGore : Form
     {
         string connection;
-        SQLiteCommand cmd;
-        SQLiteDataReader dr;
+        SqlCommand cmd;
+        SqlDataReader dr;
         public frmIl_IlceyeGore()
         {
             InitializeComponent();
@@ -25,13 +25,13 @@ namespace veriYapilariProjeOdevi
 
         private void frmIl_IlceyeGore_Load(object sender, EventArgs e)
         {
-            connection = @"Data Source =C:\Users\merve_l7t2av4\Desktop\veriYapilari\Yeni klasör\otel.db;version=3";
-            SQLiteConnection bag = new SQLiteConnection(connection);
+            connection = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Program Files\Microsoft SQL Server\MSSQL12.SQLEXPRESS\MSSQL\DATA\OtelDB.mdf;Integrated Security=True;Connect Timeout=30";
+            SqlConnection bag = new SqlConnection(connection);
             try
             {
                 bag.Open();
                 string komut = @"SELECT isim FROM sehirler";
-                cmd = new SQLiteCommand(komut, bag);
+                cmd = new SqlCommand(komut, bag);
                 dr = cmd.ExecuteReader();
                 while (dr.Read())
                 {
@@ -48,31 +48,30 @@ namespace veriYapilariProjeOdevi
 
         private void cmbGorSehir_SelectedIndexChanged(object sender, EventArgs e)
         {
-            
-                SQLiteConnection bag = new SQLiteConnection(connection);
-                try
+
+            SqlConnection bag = new SqlConnection(connection);
+            try
+            {
+                int sehirid = 0;
+                sehirid = cmbGorSehir.SelectedIndex + 1;
+                bag.Open();
+                string komut = @"SELECT isim FROM ilceler WHERE id=@p";
+                cmd = new SqlCommand(komut, bag);
+                SqlParameter prm = new SqlParameter("p", sehirid.ToString());
+                cmd.Parameters.Add(prm);
+                dr = cmd.ExecuteReader();
+                while (dr.Read())
                 {
-                    int sehirid = 0;
-                    sehirid = cmbGorSehir.SelectedIndex + 1;
-                    bag.Open();
-                    string komut = @"SELECT isim FROM ilceler WHERE id=@p";
-                    cmd = new SQLiteCommand(komut, bag);
-                    SQLiteParameter prm = new SQLiteParameter("p", sehirid.ToString());
-                    cmd.Parameters.Add(prm);
-                    dr = cmd.ExecuteReader();
-                    while (dr.Read())
-                    {
-                        cmbGorilce.Items.Add(dr["isim"]);
-                    }
-                    dr.Close();
-                    bag.Close();
+                    cmbGorilce.Items.Add(dr["isim"]);
                 }
-                catch (Exception hata)
-                {
-                    MessageBox.Show(hata.Message);
-                }
+                dr.Close();
+                bag.Close();
+            }
+            catch (Exception hata)
+            {
+                MessageBox.Show(hata.Message);
+            }
             
-             
         }
 
         private void btnSehreGore_Click(object sender, EventArgs e)
@@ -87,16 +86,16 @@ namespace veriYapilariProjeOdevi
             }
             else
             {
-                SQLiteConnection bag = new SQLiteConnection(connection);
+                SqlConnection bag = new SqlConnection(connection);
                 lstBxOteller.Items.Clear();
                 Otel o = new Otel();
                 try
                 {
                     bag.Open();
                     string komut = @"SELECT otelismi FROM otelbilgi WHERE sehir=@p1 AND ilce=@p2";
-                    cmd = new SQLiteCommand(komut, bag);
-                    SQLiteParameter prm2 = new SQLiteParameter("p1", (cmbGorSehir.SelectedIndex + 1).ToString());
-                    SQLiteParameter prm3 = new SQLiteParameter("p2", (cmbGorilce.SelectedIndex + 1).ToString());
+                    cmd = new SqlCommand(komut, bag);
+                    SqlParameter prm2 = new SqlParameter("p1", (cmbGorSehir.SelectedIndex + 1).ToString());
+                    SqlParameter prm3 = new SqlParameter("p2", (cmbGorilce.SelectedIndex + 1).ToString());
                     cmd.Parameters.Add(prm2);
                     cmd.Parameters.Add(prm3);
                     dr = cmd.ExecuteReader();
